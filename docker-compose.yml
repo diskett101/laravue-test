@@ -1,0 +1,40 @@
+version: '2'
+services:
+  # MYSQL
+  web_app_mysql:
+    container_name: web_app_mysql
+    image: mysql:5.6
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_DATABASE: web_app
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    restart: 'unless-stopped'
+
+  web_app_web_app:
+    container_name: web_app_web_app
+    image: img_web_app_web_app
+    build: .
+    ports:
+      - 7000:80
+    links:
+        - web_app_mysql
+    volumes:
+      - ./web-app:/var/www/html
+
+  web_app_phpmyadmin:
+    container_name: web_app_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - web_app_mysql
+    ports:
+      - 4444:80
+    expose:
+      - 4444
+    environment:
+      PMA_HOST: web_app_mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
