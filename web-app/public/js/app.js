@@ -1735,9 +1735,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Article Create page mounted.');
+  },
+  data: function data() {
+    return {
+      errors: {},
+      articleData: {}
+    };
+  },
+  methods: {
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      axios({
+        method: 'post',
+        url: '/api/articles',
+        data: this.articleData
+      }).then(function (_ref) {
+        var response = _ref.response;
+        window.location.href = '/';
+      })["catch"](function (_ref2) {
+        var response = _ref2.response;
+        _this.errors = response.data.error;
+      });
+    }
   }
 });
 
@@ -1768,9 +1795,52 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Article Edit page mounted.');
+  },
+  data: function data() {
+    return {
+      errors: {},
+      articleData: {},
+      articleId: null
+    };
+  },
+  created: function created() {
+    this.getArticleData(this.$route.params.id);
+  },
+  methods: {
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      axios({
+        method: 'put',
+        url: '/api/articles/' + this.articleId,
+        data: this.articleData
+      }).then(function (_ref) {
+        var response = _ref.response;
+        window.location.href = '/';
+      })["catch"](function (_ref2) {
+        var response = _ref2.response;
+        _this.errors = response.data.error;
+      });
+    },
+    getArticleData: function getArticleData(articleId) {
+      var _this2 = this;
+
+      this.articleId = articleId;
+      axios({
+        method: 'get',
+        url: '/api/articles/' + this.articleId
+      }).then(function (_ref3) {
+        var data = _ref3.data;
+        _this2.articleData = data.data;
+      });
+    }
   }
 });
 
@@ -1785,6 +1855,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -37156,32 +37227,87 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("h1", [_vm._v("\n        Create Article\n    ")]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v(" "),
-      _c("form", { attrs: { action: "" } }, [
+  return _c("div", [
+    _c("h1", [_vm._v("\n        Create Article\n    ")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        attrs: { method: "post" },
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.onSubmit($event)
+          }
+        }
+      },
+      [
         _c("label", { attrs: { for: "title" } }, [_vm._v("Title")]),
         _vm._v(" "),
-        _c("input", { attrs: { type: "text", name: "title" } }),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.articleData.title,
+              expression: "articleData.title"
+            }
+          ],
+          attrs: { type: "text", name: "title" },
+          domProps: { value: _vm.articleData.title },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.articleData, "title", $event.target.value)
+            }
+          }
+        }),
+        _vm._v(" "),
+        _vm.errors.title
+          ? _c("span", [_vm._v(_vm._s(_vm.errors.title[0]))])
+          : _vm._e(),
         _vm._v(" "),
         _c("br"),
         _vm._v(" "),
         _c("label", { attrs: { for: "content" } }, [_vm._v("Content")]),
         _vm._v(" "),
-        _c("input", { attrs: { type: "text", name: "content" } })
-      ])
-    ])
-  }
-]
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.articleData.content,
+              expression: "articleData.content"
+            }
+          ],
+          attrs: { type: "text", name: "content" },
+          domProps: { value: _vm.articleData.content },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.articleData, "content", $event.target.value)
+            }
+          }
+        }),
+        _vm._v(" "),
+        _vm.errors.content
+          ? _c("span", [_vm._v(_vm._s(_vm.errors.content[0]))])
+          : _vm._e(),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("button", { attrs: { type: "submit" } }, [_vm._v("Submit")])
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37203,32 +37329,87 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("h1", [_vm._v("\n        Edit Article\n    ")]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v(" "),
-      _c("form", { attrs: { action: "" } }, [
+  return _c("div", [
+    _c("h1", [_vm._v("\n        Edit Article\n    ")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        attrs: { method: "post" },
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.onSubmit($event)
+          }
+        }
+      },
+      [
         _c("label", { attrs: { for: "title" } }, [_vm._v("Title")]),
         _vm._v(" "),
-        _c("input", { attrs: { type: "text", name: "title" } }),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.articleData.title,
+              expression: "articleData.title"
+            }
+          ],
+          attrs: { type: "text", name: "title" },
+          domProps: { value: _vm.articleData.title },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.articleData, "title", $event.target.value)
+            }
+          }
+        }),
+        _vm._v(" "),
+        _vm.errors.title
+          ? _c("span", [_vm._v(_vm._s(_vm.errors.title[0]))])
+          : _vm._e(),
         _vm._v(" "),
         _c("br"),
         _vm._v(" "),
         _c("label", { attrs: { for: "content" } }, [_vm._v("Content")]),
         _vm._v(" "),
-        _c("input", { attrs: { type: "text", name: "content" } })
-      ])
-    ])
-  }
-]
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.articleData.content,
+              expression: "articleData.content"
+            }
+          ],
+          attrs: { type: "text", name: "content" },
+          domProps: { value: _vm.articleData.content },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.articleData, "content", $event.target.value)
+            }
+          }
+        }),
+        _vm._v(" "),
+        _vm.errors.content
+          ? _c("span", [_vm._v(_vm._s(_vm.errors.content[0]))])
+          : _vm._e(),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("button", { attrs: { type: "submit" } }, [_vm._v("Submit")])
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37270,6 +37451,10 @@ var render = function() {
                 _c("td", [_vm._v(_vm._s(article.content))]),
                 _vm._v(" "),
                 _c("td", [
+                  _c("a", { attrs: { href: "/edit/" + article.id } }, [
+                    _vm._v("Edit")
+                  ]),
+                  _vm._v(" "),
                   _c(
                     "button",
                     {
@@ -37280,7 +37465,7 @@ var render = function() {
                         }
                       }
                     },
-                    [_vm._v("X")]
+                    [_vm._v("Delete")]
                   )
                 ])
               ])

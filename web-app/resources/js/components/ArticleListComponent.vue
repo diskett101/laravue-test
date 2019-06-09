@@ -19,7 +19,8 @@
                     <td>{{ article.title }}</td>
                     <td>{{ article.content }}</td>
                     <td>
-                        <button type="button" v-on:click="removeArticle(article.id)">X</button>
+                        <a :href="'/edit/' + article.id">Edit</a>
+                        <button type="button" v-on:click="removeArticle(article.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
